@@ -1,19 +1,18 @@
 // === VERSUS — Service Worker v3 ===
-// IMPORTANT: Change CACHE_NAME version when you update files
 const CACHE_NAME = ‘versus-v3’;
+const BASE = ‘/versus/’;
 const ASSETS = [
-‘./’,
-‘./index.html’,
-‘./css/style.css’,
-‘./js/questions.js’,
-‘./js/storage.js’,
-‘./js/app.js’,
-‘./manifest.json’,
-‘./icons/icon-192.png’,
-‘./icons/icon-512.png’,
+BASE,
+BASE + ‘index.html’,
+BASE + ‘css/style.css’,
+BASE + ‘js/questions.js’,
+BASE + ‘js/storage.js’,
+BASE + ‘js/app.js’,
+BASE + ‘manifest.json’,
+BASE + ‘icons/icon-192.png’,
+BASE + ‘icons/icon-512.png’,
 ];
 
-// Install — cache all assets
 self.addEventListener(‘install’, (e) => {
 e.waitUntil(
 caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
@@ -21,7 +20,6 @@ caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
 self.skipWaiting();
 });
 
-// Activate — delete ALL old caches
 self.addEventListener(‘activate’, (e) => {
 e.waitUntil(
 caches.keys().then((keys) =>
@@ -31,7 +29,7 @@ Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
 self.clients.claim();
 });
 
-// Fetch — NETWORK FIRST (always get latest when online)
+// Network first — always get latest when online
 self.addEventListener(‘fetch’, (e) => {
 e.respondWith(
 fetch(e.request)
@@ -44,7 +42,7 @@ return response;
 })
 .catch(() => {
 return caches.match(e.request).then((cached) => {
-return cached || caches.match(’./index.html’);
+return cached || caches.match(BASE + ‘index.html’);
 });
 })
 );
