@@ -142,7 +142,26 @@ html,body{height:100%;overflow-x:hidden;background:var(--bg);font-family:var(--f
 </style>
 </head>
 <body>
-<div id="app"></div>
+<div id="app"><div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#FF6B35,#FF3CAC,#7B2FF7,#00D4AA);"><div style="font-size:72px;">⚡</div><h1 style="font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px;margin-top:8px;">VERSUS</h1><p style="color:rgba(255,255,255,.8);font-size:14px;margin-top:8px;">Loading...</p></div></div>
+<script>
+// Kill any old service workers and clear caches
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    for(var r of regs){r.unregister();}
+  });
+}
+if('caches' in window){
+  caches.keys().then(function(names){
+    for(var n of names){caches.delete(n);}
+  });
+}
+</script>
+<script>
+// Global error handler - shows errors instead of white screen
+window.onerror = function(msg, src, line, col, err) {
+  document.getElementById('app').innerHTML = '<div style="padding:40px 24px;text-align:center;font-family:sans-serif;"><h2 style="color:#1A1A2E;">⚠️ Error on line ' + line + '</h2><p style="color:#94A3B8;margin-top:8px;font-size:14px;">' + msg + '</p><button onclick="location.reload()" style="margin-top:20px;padding:12px 32px;border:none;border-radius:16px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);color:#fff;font-weight:700;cursor:pointer;">Reload</button></div>';
+};
+</script>
 <script>
 // === VERSUS — Questions Database v2 ===
 // 10 global categories + 8 regional packs = 230+ questions
