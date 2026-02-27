@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,22 +13,88 @@
   <meta property="og:description" content="Pick a side. See where the world stands.">
   <meta property="og:type" content="website">
   <title>Versus ⚡ Pick a Side</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+    /* Inline fallback styles in case CSS fails to load */
+    body { margin:0; padding:0; font-family:'Bricolage Grotesque',sans-serif; background:#FFF5E1; }
+    #app { min-height:100vh; max-width:480px; margin:0 auto; }
+    .loading-screen {
+      height:100vh; display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      background:linear-gradient(135deg,#FF6B35 0%,#FF3CAC 40%,#7B2FF7 70%,#00D4AA 100%);
+    }
+    .loading-screen h1 { font-size:48px; font-weight:800; color:#fff; margin:8px 0 0; letter-spacing:-2px; }
+    .loading-screen p { color:rgba(255,255,255,.8); font-size:14px; margin-top:8px; }
+    .loading-screen .spinner { margin-top:30px; width:28px; height:28px; border-radius:50%; border:3px solid rgba(255,255,255,.3); border-top-color:#fff; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .error-screen { padding:40px 24px; text-align:center; }
+    .error-screen h2 { color:#1A1A2E; font-size:20px; margin-bottom:8px; }
+    .error-screen p { color:#94A3B8; font-size:14px; font-family:'DM Sans',sans-serif; }
+    .error-screen button { margin-top:20px; padding:12px 32px; border:none; border-radius:16px; background:linear-gradient(135deg,#FF6B35,#FF3CAC); color:#fff; font-size:14px; font-weight:700; cursor:pointer; }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
-  <script src="js/questions.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/app.js"></script>
+  <div id="app">
+    <!-- Loading screen shows while scripts load -->
+    <div class="loading-screen" id="loadingScreen">
+      <div style="font-size:64px;">⚡</div>
+      <h1>VERSUS</h1>
+      <p>Loading...</p>
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <!-- Scripts loaded in order with error handling -->
+
+  <script src="./js/questions.js" onerror="showError('questions.js')"></script>
+
+  <script src="./js/storage.js" onerror="showError('storage.js')"></script>
+
+  <script src="./js/app.js" onerror="showError('app.js')"></script>
+
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+    // Error handler — shows friendly message instead of white screen
+    function showError(file) {
+      document.getElementById('app').innerHTML = '<div class="error-screen">' +
+        '<h2>⚠️ Failed to load</h2>' +
+        '<p>Could not load ' + file + '. Check that all files are uploaded to the correct folders in your GitHub repo.</p>' +
+        '<p style="margin-top:12px;font-size:12px;">Expected structure:<br>' +
+        'css/style.css<br>js/questions.js<br>js/storage.js<br>js/app.js<br>icons/icon-192.png</p>' +
+        '<button onclick="location.reload()">Try Again</button>' +
+        '</div>';
     }
+
+    // Register service worker with correct path
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(function(err) {
+        console.log('SW registration failed:', err);
+      });
+    }
+
+    // Safety check — if app hasn't rendered after 5 seconds, show error
+    setTimeout(function() {
+      var loading = document.getElementById('loadingScreen');
+      if (loading) {
+        document.getElementById('app').innerHTML = '<div class="error-screen">' +
+          '<h2>⚠️ Something went wrong</h2>' +
+          '<p>The app failed to start. This usually means a file is missing or in the wrong folder.</p>' +
+          '<p style="margin-top:12px;font-size:12px;">Make sure your GitHub repo has this exact structure:<br><br>' +
+          '📄 index.html (root)<br>' +
+          '📄 manifest.json (root)<br>' +
+          '📄 sw.js (root)<br>' +
+          '📁 css/ → style.css<br>' +
+          '📁 js/ → questions.js, storage.js, app.js<br>' +
+          '📁 icons/ → icon-192.png, icon-512.png</p>' +
+          '<button onclick="location.reload()">Try Again</button>' +
+          '</div>';
+      }
+    }, 5000);
   </script>
+
 </body>
 </html>
