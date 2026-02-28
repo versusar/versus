@@ -43,8 +43,8 @@
   <script>
     // ⚠️ CONFIGURE THESE (same as your main app):
     const CONFIG = {
-      SUPABASE_URL: '',
-      SUPABASE_ANON_KEY: '',
+      SUPABASE_URL: 'https://ijsonlcvkyitutsnsxzr.supabase.co',
+      SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlqc29ubGN2a3lpdHV0c25zeHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDc2OTYsImV4cCI6MjA4Nzc4MzY5Nn0.hcr9LWWOnFyAfF31peIeVDwKHLyFOwOjVkU7hSjEMuw',
       ADMIN_PIN: '1234',  // Change this!
     };
 
@@ -53,7 +53,7 @@
 
     function showLogin() {
       root.innerHTML = `<div class="login">
-        <h1>⚡ Versus Admin</h1>
+        <h1>⚡ Versus Admin</h1><a href="index.html" style="color:#00D4AA;font-size:14px;text-decoration:none;font-family:sans-serif;">&#8592; Back to Game</a>
         <p style="color:#94A3B8;font-size:14px;">Enter your admin PIN</p>
         <input type="password" id="pin" placeholder="PIN" maxlength="10">
         <button id="loginBtn">Access Dashboard</button>
