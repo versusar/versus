@@ -1,3 +1,7 @@
+// © 2026 VersuAR. All Rights Reserved.
+// Unauthorized copying, modification, or distribution is strictly prohibited.
+// See LICENSE file for full terms.
+
 // === VERSUS — Questions Database v2 ===
 // 10 global categories + 8 regional packs = 230+ questions
 

@@ -1,3 +1,7 @@
+// © 2026 VersuAR. All Rights Reserved.
+// Unauthorized copying, modification, or distribution is strictly prohibited.
+// See LICENSE file for full terms.
+
 // === VERSUS — Storage & Config ===
 
 const VERSUS_CONFIG = {
