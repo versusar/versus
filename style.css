@@ -4,8 +4,8 @@
 
 /* === VERSUS v3 — Full Stylesheet === */
 :root {
-  --bg: #FFF5E1; --card: #FFFFFF; --primary: #FF6B35; --secondary: #7B2FF7;
-  --accent: #00D4AA; --pink: #FF3CAC; --yellow: #FFD93D; --dark: #1A1A2E;
+  --bg: #F0F8FF; --card: #FFFFFF; --primary: #00B4D8; --secondary: #0077B6;
+  --accent: #00D4AA; --yellow: #FFD93D; --dark: #0A1628; --gray: #64748B;
   --gray: #94A3B8;
   --grad-a: linear-gradient(135deg, #FF6B35, #FF3CAC);
   --grad-b: linear-gradient(135deg, #7B2FF7, #00D4AA);
@@ -39,7 +39,7 @@ html, body { height:100%; overflow-x:hidden; background:var(--bg); font-family:v
 
 /* === Home === */
 .home { min-height:100vh;min-height:100dvh;background:var(--bg);padding-bottom:40px; }
-.home-header { background:linear-gradient(135deg,#FF6B35,#FF3CAC,#7B2FF7);padding:48px 24px 28px;border-radius:0 0 32px 32px;text-align:center;padding-top:calc(48px + env(safe-area-inset-top)); }
+.home-header { background:linear-gradient(135deg,#00B4D8,#0077B6,#023E8A);padding:48px 24px 28px;border-radius:0 0 32px 32px;text-align:center;padding-top:calc(48px + env(safe-area-inset-top)); }
 .home-header h1 { font-size:36px;font-weight:800;color:#fff;letter-spacing:-1.5px; }
 .home-header p { color:rgba(255,255,255,.85);font-family:var(--font-body);font-size:14px;margin-top:4px; }
 
@@ -96,8 +96,8 @@ html, body { height:100%; overflow-x:hidden; background:var(--bg); font-family:v
 .option-btn:disabled { cursor:default; }
 .option-btn.a { animation:slideIn .4s ease-out .1s both;background:var(--grad-a);color:#fff; }
 .option-btn.b { animation:slideIn .4s ease-out .2s both;background:var(--grad-b);color:#fff; }
-.option-btn.a.voted { background:var(--card);color:var(--dark);padding:18px; }
-.option-btn.b.voted { background:var(--card);color:var(--dark);padding:18px; }
+.option-btn.a { background:rgba(0,180,216,.12);border:2px solid rgba(0,180,216,.4);color:#0A1628; }
+.option-btn.b { background:rgba(0,119,182,.12);border:2px solid rgba(0,119,182,.4);color:#0A1628; }
 .option-btn.a.selected { border-color:var(--primary);box-shadow:0 4px 20px rgba(255,107,53,.3); }
 .option-btn.b.selected { border-color:var(--secondary);box-shadow:0 4px 20px rgba(123,47,247,.3); }
 
