@@ -144,22 +144,10 @@ html,body{height:100%;overflow-x:hidden;background:var(--bg);font-family:var(--f
 <body>
 <div id="app"><div style="height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#FF6B35,#FF3CAC,#7B2FF7,#00D4AA);"><div style="font-size:72px;">⚡</div><h1 style="font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px;margin-top:8px;">VERSUS</h1><p style="color:rgba(255,255,255,.8);font-size:14px;margin-top:8px;">Loading...</p></div></div>
 <script>
-// Kill any old service workers and clear caches
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    for(var r of regs){r.unregister();}
-  });
-}
-if('caches' in window){
-  caches.keys().then(function(names){
-    for(var n of names){caches.delete(n);}
-  });
-}
-</script>
-<script>
-// Global error handler - shows errors instead of white screen
-window.onerror = function(msg, src, line, col, err) {
-  document.getElementById('app').innerHTML = '<div style="padding:40px 24px;text-align:center;font-family:sans-serif;"><h2 style="color:#1A1A2E;">⚠️ Error on line ' + line + '</h2><p style="color:#94A3B8;margin-top:8px;font-size:14px;">' + msg + '</p><button onclick="location.reload()" style="margin-top:20px;padding:12px 32px;border:none;border-radius:16px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);color:#fff;font-weight:700;cursor:pointer;">Reload</button></div>';
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(r){for(var i of r){i.unregister();}});}
+if('caches' in window){caches.keys().then(function(n){for(var c of n){caches.delete(c);}});}
+window.onerror=function(msg,src,line,col,err){
+  document.getElementById('app').innerHTML='<div style="padding:40px 24px;text-align:center;font-family:sans-serif;background:#FFF5E1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;"><h2 style="color:#1A1A2E;font-size:18px;">⚠️ Error on line '+line+'</h2><p style="color:#94A3B8;margin-top:8px;font-size:13px;max-width:300px;word-break:break-word;">'+msg+'</p><button onclick="localStorage.clear();location.reload()" style="margin-top:20px;padding:12px 32px;border:none;border-radius:16px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);color:#fff;font-weight:700;cursor:pointer;">Clear Data & Reload</button></div>';
 };
 </script>
 <script>
@@ -475,9 +463,9 @@ return a;
 // ============ CONFIG ============
 const VERSUS_CONFIG = {
 // ⚠️ SET THESE AFTER CREATING YOUR SUPABASE PROJECT:
-USE_SUPABASE: true,
-SUPABASE_URL: ‘https://ijsonlcvkyitutsnsxzr.supabase.co’,
-SUPABASE_ANON_KEY: ‘eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlqc29ubGN2a3lpdHV0c25zeHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDc2OTYsImV4cCI6MjA4Nzc4MzY5Nn0.hcr9LWWOnFyAfF31peIeVDwKHLyFOwOjVkU7hSjEMuw’,
+USE_SUPABASE: false,
+SUPABASE_URL: ‘’,       // e.g. ‘https://xxxxx.supabase.co’
+SUPABASE_ANON_KEY: ‘’,  // your anon/public key
 FREE_DAILY_QUESTIONS: 10,
 AD_EVERY_N_QUESTIONS: 5,
 SHARE_UNLOCK_BONUS: 5,
@@ -746,7 +734,6 @@ const rb=state.region&&state.region!==‘global’?`<div style="display:flex;jus
 const rc=state.region&&state.region!==‘global’?`<button class="cat-card" style="background:linear-gradient(135deg,#1A1A2E,#3D3D5C);animation:fadeIn .4s ease-out ${ce.length*.06}s both;grid-column:1/-1;" data-cat="${state.region}" data-regional="true"><div style="display:flex;align-items:center;gap:12px;"><div class="emoji" style="font-size:36px;">${state.region.split(' ')[0]}</div><div><div class="name" style="font-size:16px;">${state.region.split(' ').slice(1).join(' ')} Edition</div><div class="count">${getRegionalQuestions(state.region).length} local debates</div></div></div></button>`:’’;
 const unameDisplay=p.username?`<div style="font-size:12px;color:rgba(255,255,255,.7);font-family:var(--font-body);margin-top:4px;">@${p.username}</div>`:`<button id="setNameBtn" style="margin-top:6px;background:rgba(255,255,255,.25);border:none;border-radius:12px;padding:4px 14px;color:#fff;font-size:11px;font-weight:700;font-family:var(--font-body);cursor:pointer;">Set Username</button>`;
 app.innerHTML=`<div class="home" style="padding-bottom:80px;"> <div class="home-header"><h1>⚡ VERSUS</h1><p>Pick a side. See where the world stands.</p>${unameDisplay} <div class="level-card"><div class="level-top"><span class="level-badge">${p.levelEmoji} ${p.levelName}</span><span class="level-label">Lv.${p.level}</span></div> <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${lp.progress}%"></div></div> <div class="xp-bar-label">${lp.label} to next level</div></div> <div class="stats-row"><div class="stat-pill">🗳 ${p.totalVotes}</div><div class="stat-pill">🔥 ${p.streak} streak</div><div class="stat-pill">⭐ ${p.xp} XP</div></div>${rb}</div> <div style="padding:24px 20px 0;"><button class="daily-btn" id="playAll"><div class="label">⚡ TODAY'S MIX</div><div class="title">Play All Categories</div><div class="desc">${daily.freeLeft} free left · ${totalQs} total</div><div class="arrow">→</div></button></div> <div style="padding:16px 20px 0;display:flex;gap:10px;"> <button class="nav-pill" id="goDaily">📋 Daily 5</button> </div> <div style="padding:20px 20px 0;"><h2 class="section-title">Categories</h2> <div class="cat-grid">${ce.map(([c,qs],i)=>`<button class="cat-card" style="background:${CG[i%CG.length]};animation:fadeIn .4s ease-out ${i*.06}s both;" data-cat="${c}"><div class="emoji">${c.split(’ ‘)[0]}</div><div class="name">${c.split(’ ‘).slice(1).join(’ ‘)}</div><div class="count">${qs.length} Qs</div></button>`).join('')}${rc}</div></div> <div class="footer">© 2026 Versus · All Rights Reserved</div> ${bottomNav('home')}</div>`;
-// Admin access: tap footer 5 times
 let tapCount=0;const footer=document.querySelector(’.footer’);
 if(footer)footer.addEventListener(‘click’,()=>{tapCount++;if(tapCount>=5){window.location.href=‘admin.html’;tapCount=0;}setTimeout(()=>{tapCount=0;},3000);});
 $(’#playAll’).addEventListener(‘click’,()=>startGame(‘all’));
