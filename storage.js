@@ -12,14 +12,10 @@ const VERSUS_CONFIG = {
 const XP_CONFIG = {VOTE:10,STREAK_BONUS:5,DAILY_COMPLETE:50,SHARE:25,MAJORITY:5,AGAINST_GRAIN:15,ACHIEVEMENT:100};
 
 const LEVELS = [
-  {name:"Rookie",emoji:"🐣",xp:0},
-  {name:"Opinionated",emoji:"🗣️",xp:100},
-  {name:"Hot Taker",emoji:"🔥",xp:300},
-  {name:"Debate Bro",emoji:"⚔️",xp:600},
-  {name:"Trend Setter",emoji:"📈",xp:1000},
-  {name:"Influence Lord",emoji:"👑",xp:1800},
-  {name:"Versus Elite",emoji:"💎",xp:3000},
-  {name:"Versus Legend",emoji:"⚡",xp:5000},
+  {name:"Rookie",emoji:"🐣",xp:0}, {name:"Opinionated",emoji:"🗣️",xp:100},
+  {name:"Hot Taker",emoji:"🔥",xp:300}, {name:"Debate Bro",emoji:"⚔️",xp:600},
+  {name:"Trend Setter",emoji:"📈",xp:1000}, {name:"Influence Lord",emoji:"👑",xp:1800},
+  {name:"Versus Elite",emoji:"💎",xp:3000}, {name:"Versus Legend",emoji:"⚡",xp:5000},
   {name:"Versus God",emoji:"🌟",xp:10000},
 ];
 
@@ -30,10 +26,18 @@ const VS = {
   getProfile() {
     let p = this.get('profile');
     if (!p) {
-      p = { username: null, xp: 0, level: 1, levelName: LEVELS[0].name, levelEmoji: LEVELS[0].emoji, totalVotes: 0, shares: 0, dailyVotes: 0, lastDailyReset: Date.now() };
+      p = { username: null, xp: 0, level: 1, levelName: LEVELS[0].name, levelEmoji: LEVELS[0].emoji, totalVotes: 0, streak: 0, bestStreak: 0 };
       this.set('profile', p);
     }
     return p;
+  },
+
+  getLevelProgress() {
+    const p = this.getProfile();
+    const nextLvl = LEVELS[p.level] || LEVELS[LEVELS.length - 1];
+    const currentLvlXP = LEVELS[p.level - 1].xp;
+    const progress = ((p.xp - currentLvlXP) / (nextLvl.xp - currentLvlXP)) * 100;
+    return { progress: Math.min(100, progress), label: `${nextLvl.xp - p.xp} XP` };
   },
 
   addXP(amt) {
@@ -46,39 +50,43 @@ const VS = {
     p.levelName = LEVELS[nl-1].name;
     p.levelEmoji = LEVELS[nl-1].emoji;
     this.set('profile', p);
-    return { xp: amt, totalXP: p.xp, level: nl, leveledUp, levelName: p.levelName, emoji: p.levelEmoji };
+    return { xp: amt, leveledUp, levelName: p.levelName, emoji: p.levelEmoji };
   },
 
-  getVoteCounts(qText, sA, sB) {
+  getVoteCounts(q, sA, sB) {
     const gv = this.get('globalVotes') || {};
-    const qv = gv[qText] || { a: 0, b: 0 };
+    const qv = gv[q] || { a: 0, b: 0 };
     const tA = sA + qv.a;
     const tB = sB + qv.b;
     const total = tA + tB;
     return { a: Math.round((tA / total) * 100), b: Math.round((tB / total) * 100) };
   },
 
-  recordVote(qText, side, withMaj) {
+  saveVote(q, side, cat, withMaj) {
     const gv = this.get('globalVotes') || {};
-    if (!gv[qText]) gv[qText] = { a: 0, b: 0 };
-    gv[qText][side]++;
+    if (!gv[q]) gv[q] = { a: 0, b: 0 };
+    gv[q][side]++;
     this.set('globalVotes', gv);
 
     const p = this.getProfile();
     p.totalVotes++;
+    p.streak++;
+    p.bestStreak = Math.max(p.streak, p.bestStreak);
     this.set('profile', p);
 
-    let xpE = XP_CONFIG.VOTE;
-    if (withMaj) xpE += XP_CONFIG.MAJORITY;
-    return this.addXP(xpE);
+    let xpAmt = XP_CONFIG.VOTE + (p.streak * XP_CONFIG.STREAK_BONUS);
+    if (!withMaj) xpAmt += XP_CONFIG.AGAINST_GRAIN;
+    
+    return { xpResult: this.addXP(xpAmt), newAchievements: [] };
   },
 
-  recordShare() {
-    const p = this.getProfile();
-    p.shares++;
-    this.set('profile', p);
-    return this.addXP(XP_CONFIG.SHARE);
-  }
+  getDailyStatus() {
+    return { freeLeft: 10, shouldShowPaywall: false, shouldShowAd: false };
+  },
+
+  hasVoted(q) { return false; },
+  recordShare() { return []; },
+  addGlobalVote() {}
 };
 
-window.VS = VS; // Critical Fix: Makes VS available to app.js
+window.VS = VS;
