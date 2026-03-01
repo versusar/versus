@@ -8,31 +8,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Versus Admin | Secure Access</title>
+  <title>Versus Admin</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'DM Sans',sans-serif;background:#0F0F1A;color:#E2E8F0;min-height:100vh;}
-    .login{height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;}
-    .login h1{font-size:28px;color:#FF6B35;letter-spacing:-1px;}
+    .login{height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+    .login h1{font-size:28px;color:#FF6B35;}
     .login input{padding:14px 20px;border-radius:12px;border:2px solid #2D2D4E;background:#1A1A2E;color:#fff;font-size:16px;width:280px;text-align:center;}
     .login input:focus{border-color:#FF6B35;outline:none;}
-    .login button{padding:12px 32px;border:none;border-radius:12px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);color:#fff;font-weight:700;font-size:14px;cursor:pointer;width:280px;}
-    
+    .login button{padding:12px 32px;border:none;border-radius:12px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);color:#fff;font-weight:700;font-size:14px;cursor:pointer;}
     .dash{padding:24px;max-width:900px;margin:0 auto;}
     .dash h1{font-size:24px;color:#FF6B35;margin-bottom:20px;}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
     .kpi{background:#1A1A2E;border-radius:16px;padding:20px;text-align:center;border:1px solid #2D2D4E;}
     .kpi .num{font-size:32px;font-weight:700;color:#FF6B35;}
     .kpi .label{font-size:12px;color:#94A3B8;margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
-    
     .card{background:#1A1A2E;border-radius:16px;padding:20px;border:1px solid #2D2D4E;margin-bottom:16px;}
     .card h2{font-size:16px;font-weight:700;margin-bottom:12px;color:#fff;}
-    
     table{width:100%;border-collapse:collapse;font-size:13px;}
     th{text-align:left;padding:8px;color:#94A3B8;border-bottom:1px solid #2D2D4E;font-weight:600;}
     td{padding:8px;border-bottom:1px solid #1E1E32;}
-    
     .bar{height:8px;border-radius:4px;background:#2D2D4E;overflow:hidden;min-width:100px;}
     .bar-fill{height:100%;border-radius:4px;}
     .bar-a{background:linear-gradient(90deg,#FF6B35,#FF3CAC);}
@@ -40,7 +36,6 @@
     .tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;}
     .refresh{background:none;border:1px solid #FF6B35;color:#FF6B35;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:700;font-size:12px;}
     .no-data{text-align:center;color:#94A3B8;padding:40px;}
-    .legal-footer{text-align:center;margin-top:40px;padding:20px;color:#4A4A6A;font-size:11px;border-top:1px solid #1A1A2E;}
   </style>
 </head>
 <body>
@@ -48,9 +43,9 @@
   <script>
     // ⚠️ CONFIGURE THESE (same as your main app):
     const CONFIG = {
-      SUPABASE_URL: 'https://ijsonlcvkyitutsnsxzr.supabase.co',
-      SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlqc29ubGN2a3lpdHV0c25zeHpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMDc2OTYsImV4cCI6MjA4Nzc4MzY5Nn0.hcr9LWWOnFyAfF31peIeVDwKHLyFOwOjVkU7hSjEMuw',
-      ADMIN_PIN: '1234', 
+      SUPABASE_URL: '',
+      SUPABASE_ANON_KEY: '',
+      ADMIN_PIN: '1234',  // Change this!
     };
 
     const root = document.getElementById('root');
@@ -58,15 +53,12 @@
 
     function showLogin() {
       root.innerHTML = `<div class="login">
-        <div style="font-size:40px; margin-bottom:10px;">🛡️</div>
-        <h1>VERSUS ADMIN</h1>
-        <p style="color:#4A4A6A; font-size:12px; margin-bottom:15px;">© 2026 VersuAR. AUTHORIZED ACCESS ONLY.</p>
-        <input type="password" id="pin" placeholder="ENTER PIN" maxlength="10">
-        <button id="loginBtn">VERIFY IDENTITY</button>
-        <p id="err" style="color:#FF3CAC; font-size:12px; display:none; margin-top:10px;">ACCESS DENIED</p>
-        <a href="index.html" style="color:#94A3B8; font-size:11px; text-decoration:none; margin-top:20px;">← RETURN TO APP</a>
+        <h1>⚡ Versus Admin</h1>
+        <p style="color:#94A3B8;font-size:14px;">Enter your admin PIN</p>
+        <input type="password" id="pin" placeholder="PIN" maxlength="10">
+        <button id="loginBtn">Access Dashboard</button>
+        <p id="err" style="color:#FF3CAC;font-size:12px;display:none;">Wrong PIN</p>
       </div>`;
-      
       document.getElementById('loginBtn').addEventListener('click', () => {
         if (document.getElementById('pin').value === CONFIG.ADMIN_PIN) {
           authed = true; showDashboard();
@@ -78,7 +70,7 @@
     }
 
     async function showDashboard() {
-      root.innerHTML = `<div class="dash"><h1>⚡ VERSUS CENTRAL COMMAND</h1><p style="color:#94A3B8;">Decrypting Secure Data...</p></div>`;
+      root.innerHTML = `<div class="dash"><h1>⚡ Versus Admin</h1><p style="color:#94A3B8;">Loading...</p></div>`;
 
       // Local stats (always available)
       const localKeys = Object.keys(localStorage).filter(k => k.startsWith('versus_'));
@@ -94,11 +86,13 @@
             fetch(`${CONFIG.SUPABASE_URL}/rest/v1/votes?select=question_text,side,created_at,region,username&order=created_at.desc&limit=500`, { headers }),
             fetch(`${CONFIG.SUPABASE_URL}/rest/v1/leaderboard?select=*&order=xp.desc&limit=100`, { headers }),
           ]);
-          cloudStats = { votes: await votesRes.json(), users: await usersRes.json() };
+          const votes = await votesRes.json();
+          const users = await usersRes.json();
+          cloudStats = { votes, users };
         } catch (e) { console.error('Cloud fetch failed:', e); }
       }
 
-      // Build dashboard data
+      // Build dashboard
       const voteEntries = Object.entries(localVotes);
       const globalEntries = Object.entries(localGlobal);
 
@@ -119,52 +113,50 @@
 
       root.innerHTML = `<div class="dash">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-          <h1>⚡ VERSUS COMMAND</h1>
-          <button class="refresh" onclick="showDashboard()">SYNC DATA</button>
+          <h1>⚡ Versus Admin</h1>
+          <button class="refresh" onclick="showDashboard()">↻ Refresh</button>
         </div>
 
         <div class="grid">
-          <div class="kpi"><div class="num">${voteEntries.length + totalCloudVotes}</div><div class="label">Total Engagement</div></div>
-          <div class="kpi"><div class="num">${totalCloudUsers || 1}</div><div class="label">Verified Users</div></div>
-          <div class="kpi"><div class="num">${localProfile.streak || 0}</div><div class="label">Current Streak</div></div>
+          <div class="kpi"><div class="num">${voteEntries.length + totalCloudVotes}</div><div class="label">Total Votes</div></div>
+          <div class="kpi"><div class="num">${totalCloudUsers || 1}</div><div class="label">Users</div></div>
+          <div class="kpi"><div class="num">${localProfile.streak || 0}</div><div class="label">Your Streak</div></div>
           <div class="kpi"><div class="num">${Object.keys(regionsMap).length || 1}</div><div class="label">Regions Active</div></div>
         </div>
 
-        ${cloudStats ? `<div class="card"><h2>👥 TOP PERFORMERS (GLOBAL)</h2>
-          <table><tr><th>#</th><th>USERNAME</th><th>XP</th><th>LEVEL</th><th>VOTES</th><th>STREAK</th><th>REGION</th></tr>
+        ${cloudStats ? `<div class="card"><h2>👥 Top Users (Cloud)</h2>
+          <table><tr><th>#</th><th>Username</th><th>XP</th><th>Level</th><th>Votes</th><th>Streak</th><th>Region</th></tr>
           ${cloudStats.users.slice(0, 20).map((u, i) => `<tr><td>${i + 1}</td><td>${u.username || 'Anon'}</td><td>${u.xp}</td><td>Lv.${u.level}</td><td>${u.total_votes}</td><td>🔥${u.best_streak}</td><td>${u.region || '-'}</td></tr>`).join('')}
-          </table></div>` : '<div class="card"><h2>👥 CLOUD USERS</h2><p class="no-data">Supabase Connection Required.</p></div>'}
+          </table></div>` : '<div class="card"><h2>👥 Users</h2><p class="no-data">Connect Supabase to see cloud users.<br>Set SUPABASE_URL and SUPABASE_ANON_KEY in this file.</p></div>'}
 
-        <div class="card"><h2>📊 QUESTION ANALYTICS (LOCAL)</h2>
-          ${topQs.length > 0 ? `<table><tr><th>QUESTION</th><th>A</th><th>B</th><th>SPLIT</th></tr>
+        <div class="card"><h2>📊 Top Questions (Local Data)</h2>
+          ${topQs.length > 0 ? `<table><tr><th>Question</th><th>A</th><th>B</th><th>Split</th></tr>
           ${topQs.map(([q, s]) => {
             const pA = s.total > 0 ? Math.round((s.a / s.total) * 100) : 50;
             return `<tr><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${q}</td><td>${s.a}</td><td>${s.b}</td><td><div class="bar"><div class="bar-fill bar-a" style="width:${pA}%"></div></div><span style="font-size:10px;color:#94A3B8;">${pA}% / ${100 - pA}%</span></td></tr>`;
-          }).join('')}</table>` : '<p class="no-data">No local data found.</p>'}
+          }).join('')}</table>` : '<p class="no-data">No vote data yet. Play some questions first!</p>'}
         </div>
 
-        ${cloudStats ? `<div class="card"><h2>🌍 REGIONAL DENSITY</h2>
-          <table><tr><th>REGION</th><th>USER COUNT</th></tr>
+        ${cloudStats ? `<div class="card"><h2>🌍 Votes by Region</h2>
+          <table><tr><th>Region</th><th>Users</th></tr>
           ${Object.entries(regionsMap).sort((a, b) => b[1] - a[1]).map(([r, c]) => `<tr><td>${r}</td><td>${c}</td></tr>`).join('')}
           </table></div>` : ''}
 
-        ${cloudStats ? `<div class="card"><h2>🕐 RECENT GLOBAL ACTIVITY</h2>
-          <table><tr><th>TIME</th><th>QUESTION</th><th>SIDE</th><th>USER</th></tr>
+        ${cloudStats ? `<div class="card"><h2>🕐 Recent Votes (Cloud)</h2>
+          <table><tr><th>Time</th><th>Question</th><th>Side</th><th>User</th></tr>
           ${cloudStats.votes.slice(0, 30).map(v => `<tr><td style="white-space:nowrap;">${new Date(v.created_at).toLocaleString()}</td><td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.question_text}</td><td><span class="tag" style="background:${v.side === 'a' ? '#FF6B35' : '#7B2FF7'};color:#fff;">${v.side.toUpperCase()}</span></td><td>${v.username || 'Anon'}</td></tr>`).join('')}
           </table></div>` : ''}
 
-        <div class="card"><h2>🔧 SYSTEM STATUS</h2>
+        <div class="card"><h2>🔧 Setup Status</h2>
           <table>
-            <tr><td>Supabase Link</td><td>${CONFIG.SUPABASE_URL ? '✅ ACTIVE' : '❌ OFFLINE'}</td></tr>
-            <tr><td>Cloud Records</td><td>${totalCloudVotes}</td></tr>
-            <tr><td>Local Keys</td><td>${localKeys.length}</td></tr>
+            <tr><td>Supabase Connected</td><td>${CONFIG.SUPABASE_URL ? '✅ Yes' : '❌ Not configured'}</td></tr>
+            <tr><td>Cloud Votes</td><td>${totalCloudVotes}</td></tr>
+            <tr><td>Cloud Users</td><td>${totalCloudUsers}</td></tr>
+            <tr><td>Local Storage Keys</td><td>${localKeys.length}</td></tr>
           </table>
         </div>
 
-        <div class="legal-footer">
-          <p>© 2026 VersuAR. All Rights Reserved.</p>
-          <p style="margin-top:4px; opacity:0.5;">ADMIN SESSION ACTIVE | SECURE PROTOCOL</p>
-        </div>
+        <div style="text-align:center;margin-top:24px;color:#94A3B8;font-size:11px;">Versus Admin · © 2026</div>
       </div>`;
     }
 

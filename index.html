@@ -1,49 +1,47 @@
 <!DOCTYPE html>
-
 <!--
   Versus — Daily Opinion Game
   © 2026 VersuAR. All Rights Reserved.
   Unauthorized copying, modification, or distribution is strictly prohibited.
   See LICENSE file for full terms.
 -->
-
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Versus | Global Opinions</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700;900&display=swap" rel="stylesheet">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <style>
-        body { margin: 0; background: #FFF8E7; font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
-        #app { min-height: 100vh; width: 100vw; }
-        .spinner { width: 50px; height: 50px; border: 5px solid rgba(255,107,53,0.1); border-top-color: #FF6B35; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loader-wrap { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0F0F1A; color: white; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Versus">
+  <meta name="theme-color" content="#FF6B35">
+  <meta name="description" content="Versus — Pick a side. See where the world stands.">
+  <title>Versus ⚡ Pick a Side</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{margin:0;padding:0;font-family:'Bricolage Grotesque',sans-serif;background:#FFF5E1;}
+    #app{min-height:100vh;max-width:480px;margin:0 auto;}
+    .boot{height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#FF6B35,#FF3CAC,#7B2FF7,#00D4AA);}
+    .boot h1{font-size:48px;font-weight:800;color:#fff;letter-spacing:-2px;margin-top:8px;}
+    .boot p{color:rgba(255,255,255,.8);font-size:14px;margin-top:8px;}
+  </style>
 </head>
 <body>
-    <div id="app">
-        <div class="loader-wrap">
-            <div class="spinner"></div>
-            <h2 style="margin-top:20px; letter-spacing:4px; font-weight:900;">VERSUS</h2>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="data.js"></script>
-    <script src="app.js"></script>
-
-    <div id="audio-guard" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:9999; display:none; background:rgba(15,15,26,0.95); backdrop-filter:blur(10px); color:white; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; text-align:center; padding:20px;">
-        <div style="font-size:80px; margin-bottom:20px;">⚡</div>
-        <h1 style="font-weight:900; margin:0;">ACTIVATE GROOVE</h1>
-        <p style="opacity:0.6; margin-top:10px; margin-bottom:30px;">Tap to sync regional music and begin.</p>
-        <div style="padding:18px 45px; background:#FF6B35; border-radius:15px; font-weight:900; box-shadow:0 10px 20px rgba(255,107,53,0.3);">START GAME</div>
-    </div>
+  <div id="app">
+    <div class="boot"><div style="font-size:72px;">⚡</div><h1>VERSUS</h1><p>Loading...</p></div>
+  </div>
+  <script>
+    // Kill old service workers & caches
+    if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>{for(var i of r)i.unregister();});}
+    if('caches' in window){caches.keys().then(n=>{for(var c of n)caches.delete(c);});}
+    // Show errors instead of white screen
+    window.onerror=function(msg,src,line){
+      document.getElementById('app').innerHTML='<div style="padding:40px 24px;text-align:center;font-family:sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;"><h2 style="color:#1A1A2E;">⚠️ Error</h2><p style="color:#94A3B8;margin-top:8px;font-size:13px;">Line '+line+': '+msg+'</p><p style="color:#94A3B8;font-size:11px;margin-top:8px;">File: '+src.split("/").pop()+'</p><button onclick="localStorage.clear();location.reload()" style="margin-top:20px;padding:12px 32px;border:none;border-radius:16px;background:linear-gradient(135deg,#FF6B35,#FF3CAC);color:#fff;font-weight:700;cursor:pointer;">Clear & Reload</button></div>';
+    };
+  </script>
+  <script src="questions.js"></script>
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
