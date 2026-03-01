@@ -1,0 +1,14 @@
+{
+“name”: “Versus — Daily Opinion Game”,
+“short_name”: “Versus”,
+“description”: “Pick a side. See where the world stands.”,
+“start_url”: “/versus/”,
+“display”: “standalone”,
+“background_color”: “#FFF5E1”,
+“theme_color”: “#FF6B35”,
+“orientation”: “portrait”,
+“icons”: [
+{ “src”: “icons/icon-192.png”, “sizes”: “192x192”, “type”: “image/png” },
+{ “src”: “icons/icon-512.png”, “sizes”: “512x512”, “type”: “image/png” }
+]
+}
