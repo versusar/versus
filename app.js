@@ -1,6 +1,5 @@
 // © 2026 VersuAR. All Rights Reserved.
 // Unauthorized copying, modification, or distribution is strictly prohibited.
-// See LICENSE file for full terms.
 
 // === VERSUS — Full App Logic ===
 const $ = s => document.querySelector(s);
@@ -8,7 +7,6 @@ const $$ = s => document.querySelectorAll(s);
 const app = document.getElementById('app');
 const APP_URL = 'https://versusar.github.io/versus/';
 
-// FIX: Declare state but don't initialize until initApp runs
 let state;
 
 const CG = [
@@ -19,10 +17,6 @@ const CG = [
   'linear-gradient(135deg,#8338EC,#C77DFF)', 'linear-gradient(135deg,#06D6A0,#73E8C4)'
 ];
 
-/**
- * INITIALIZATION GATE
- * This ensures storage.js and questions.js are ready before starting.
- */
 function initApp() {
   state = {
     screen: 'splash', 
@@ -113,28 +107,51 @@ function renderOnboard() {
   });
 }
 
-// === Region Select ===
+// === OPTIMIZED: Region Select ===
 function renderRegionSelect() {
   const regions = getRegionKeys();
   app.innerHTML = `<div class="home"><div class="home-header"><h1>⚡ VERSUS</h1><p>Where in the world are you?</p></div>
-    <div class="cat-grid" style="padding:24px;">${regions.map((r, i) => `<button class="cat-card" style="background:${CG[i % CG.length]}" data-region="${r}"><div class="emoji">${r.split(' ')[0]}</div><div class="name">${r.split(' ').slice(1).join(' ')}</div></button>`).join('')}</div>
-    <div style="text-align:center;"><button id="skipRegion" style="color:var(--gray);background:none;border:none;text-decoration:underline;">Skip — global only</button></div></div>`;
+    <div class="cat-grid" style="padding:24px;">
+      ${regions.map((r, i) => `
+        <button class="cat-card" style="background:${CG[i % CG.length]}" data-region="${r}">
+          <div class="emoji">${r.split(' ')[0]}</div>
+          <div class="name">${r.split(' ').slice(1).join(' ')}</div>
+        </button>`).join('')}
+    </div>
+    <div style="text-align:center; margin-bottom: 20px;">
+      <button id="skipRegion" style="color:var(--gray);background:none;border:none;text-decoration:underline;cursor:pointer;">Skip — Global Only</button>
+    </div></div>`;
   
   $$('.cat-card').forEach(b => b.addEventListener('click', () => {
-    state.region = b.dataset.region; VS.set('region', state.region);
-    state.screen = 'home'; render();
+    state.region = b.dataset.region; 
+    VS.set('region', state.region);
+    state.screen = 'home'; 
+    render();
   }));
-  $('#skipRegion').addEventListener('click', () => { state.region = 'global'; VS.set('region', 'global'); state.screen = 'home'; render(); });
+  $('#skipRegion').addEventListener('click', () => { 
+    state.region = 'global'; 
+    VS.set('region', 'global'); 
+    state.screen = 'home'; 
+    render(); 
+  });
 }
 
 // === Home ===
 function renderHome() {
-  const p = VS.getProfile(), lp = VS.getLevelProgress(), daily = VS.getDailyStatus(), ce = Object.entries(CATEGORIES);
-  const totalQs = state.region && state.region !== 'global' ? ALL_QUESTIONS.length + getRegionalQuestions(state.region).length : ALL_QUESTIONS.length;
+  const p = VS.getProfile(), lp = VS.getLevelProgress(), ce = Object.entries(CATEGORIES);
+  const regionLabel = state.region && state.region !== 'global' ? state.region : 'Global';
+  
+  // Dynamic pool count for 'Play All'
+  const totalQs = (state.region && state.region !== 'global') 
+    ? ALL_QUESTIONS.length + getRegionalQuestions(state.region).length 
+    : ALL_QUESTIONS.length;
   
   app.innerHTML = `<div class="home" style="padding-bottom:100px;">
     <div class="home-header">
-      <h1>⚡ VERSUS</h1>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>⚡ VERSUS</h1>
+        <button id="changeRegion" style="font-size:12px; background:rgba(255,255,255,0.1); border:none; color:white; padding:4px 8px; border-radius:10px;">📍 ${regionLabel}</button>
+      </div>
       <div class="level-card">
         <div class="level-top"><span class="level-badge">${p.levelEmoji} ${p.levelName}</span><span class="level-label">Lv.${p.level}</span></div>
         <div class="xp-bar-track"><div class="xp-bar-fill" style="width:${lp.progress}%"></div></div>
@@ -152,9 +169,9 @@ function renderHome() {
     ${bottomNav('home')}</div>`;
 
   $('#playAll').addEventListener('click', () => startGame('all'));
+  $('#changeRegion').addEventListener('click', () => { state.screen = 'region'; render(); });
   $$('.cat-card').forEach(b => b.addEventListener('click', () => startGame(b.dataset.cat)));
   
-  // Admin trigger: 5 taps on footer
   let taps = 0;
   $('.footer').addEventListener('click', () => {
     taps++;
@@ -224,12 +241,11 @@ function renderLeaderboard() {
 
 // === Profile ===
 function renderProfile() {
-  const p = VS.getProfile(), lp = VS.getLevelProgress();
+  const p = VS.getProfile();
   app.innerHTML = `<div class="game" style="padding:20px; text-align:center;">
     <div style="font-size:80px; margin-top:40px;">${p.levelEmoji}</div>
     <h1 style="font-family:var(--font-display); font-size:32px; margin-top:10px;">${p.username || 'Versus Player'}</h1>
     <p style="color:var(--gray); font-family:var(--font-body);">${p.levelName} · Level ${p.level}</p>
-    
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:30px;">
       <div class="stat-card" style="background:white; padding:20px; border-radius:15px;">
         <div class="stat-num" style="font-size:24px; font-weight:800;">${p.totalVotes}</div>
@@ -240,7 +256,6 @@ function renderProfile() {
         <div class="stat-label">Best Streak</div>
       </div>
     </div>
-
     <button id="editName" class="paywall-btn ghost" style="margin-top:20px;">Edit Username</button>
     ${bottomNav('profile')}</div>`;
   
@@ -253,7 +268,6 @@ function renderStats() {
   const achs = VS.getAchievements ? VS.getAchievements() : [];
   app.innerHTML = `<div class="game" style="padding:20px;">
     <h1 style="font-family:var(--font-display); margin-bottom:20px;">📊 Stats & Badges</h1>
-    <p style="color:var(--gray); margin-bottom:20px;">Collect badges by playing daily!</p>
     <div class="cat-grid">
       ${achs.length > 0 ? achs.map(a => `<div class="badge-card ${a.unlocked ? 'unlocked' : 'locked'}">
         <div style="font-size:32px;">${a.unlocked ? a.emoji : '🔒'}</div>
@@ -264,14 +278,27 @@ function renderStats() {
   bindNav();
 }
 
-// === Game Logic ===
+// === OPTIMIZED: Game Logic (Uses new questions.js functions) ===
 function startGame(cat) {
   state.activeCategory = cat;
-  let qs = (cat === 'all') ? (state.region && state.region !== 'global' ? getAllWithRegion(state.region) : [...ALL_QUESTIONS]) : (CATEGORIES[cat] || []).map(q => ({...q, category: cat}));
+  let pool = [];
+
+  if (cat === 'all') {
+    pool = (state.region && state.region !== 'global') 
+      ? getAllWithRegion(state.region) 
+      : [...ALL_QUESTIONS];
+  } else {
+    // If specific category, get global ones + regional ones if they exist for that cat
+    const globalCat = (CATEGORIES[cat] || []).map(q => ({...q, category: cat}));
+    const regionalCat = (state.region && REGIONS[state.region]) 
+      ? REGIONS[state.region].filter(q => q.category === cat) 
+      : [];
+    pool = [...globalCat, ...regionalCat];
+  }
   
-  if (qs.length === 0) { state.screen = 'home'; render(); return; }
+  if (pool.length === 0) { state.screen = 'home'; render(); return; }
   
-  state.questions = qs.sort(() => Math.random() - 0.5);
+  state.questions = shuffleArray(pool);
   state.currentQ = 0;
   state.selected = null;
   state.showResults = false;
@@ -342,5 +369,4 @@ function render() {
   }
 }
 
-// LAUNCH
 window.addEventListener('load', initApp);
