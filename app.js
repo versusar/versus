@@ -1,6 +1,19 @@
 // © 2026 VersuAR. All Rights Reserved.
 // Unauthorized copying, modification, or distribution is strictly prohibited.
 
+const AUDIO = {
+  bgm: new Audio('https://assets.mixkit.co/music/preview/mixkit-tech-house-vibes-130.mp3'), // Placeholder groovy track
+  init: function() {
+    this.bgm.loop = true;
+    this.bgm.volume = 0.4;
+  },
+  play: function() {
+    this.bgm.play().catch(() => console.log("Waiting for user interaction to play music..."));
+  }
+};
+AUDIO.init();
+
+
 // === VERSUS — Full App Logic v2.1 (Leaderboard & Cloud Sync) ===
 const $ = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
