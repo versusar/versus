@@ -280,6 +280,47 @@ const REGIONS = {
   ],
 };
 
+// === VERSUS — Questions Database ===
+
+const CATEGORIES = {
+  "🔥 Trending": [
+    { q: "AI will replace most jobs in 10 years", a: "Agree", b: "No Way", seed: [62, 38] },
+    { q: "TikTok is more influential than Google", a: "Facts", b: "Cap", seed: [57, 43] }
+  ],
+  "🍔 Food": [
+    { q: "Pineapple on pizza", a: "Masterpiece", b: "Crime", seed: [45, 55] },
+    { q: "Coffee or Tea?", a: "Coffee ☕", b: "Tea 🍵", seed: [65, 35] }
+  ]
+};
+
+const REGIONS = {
+  "USA 🇺🇸": [
+    { q: "Baseball or Football?", a: "Baseball", b: "Football", seed: [30, 70] }
+  ],
+  "UK 🇬🇧": [
+    { q: "Tea with milk or without?", a: "With", b: "Without", seed: [85, 15] }
+  ]
+};
+
+// === DYNAMIC GENERATOR ===
+const ALL_QUESTIONS = [];
+Object.entries(CATEGORIES).forEach(([catName, list]) => {
+  list.forEach(q => {
+    ALL_QUESTIONS.push({ ...q, category: catName, seed: q.seed || [50, 50] });
+  });
+});
+
+function getRegionKeys() { return Object.keys(REGIONS); }
+
+function getRegionalQuestions(regionKey) {
+  return (REGIONS[regionKey] || []).map(q => ({ ...q, category: regionKey }));
+}
+
+function getAllWithRegion(regionKey) {
+  return [...ALL_QUESTIONS, ...getRegionalQuestions(regionKey)];
+}
+
+
 // ========================
 // HELPERS
 // ========================
