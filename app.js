@@ -1,9 +1,9 @@
 /**
- * VERSUS CORE SYSTEM v7.0 — "THE GLOBAL GROOVE"
+ * VERSUS CORE SYSTEM — "THE GLOBAL GROOVE"
  * -----------------------------------------------------------------------------
  * TARGET FILENAME: app.js
- * LINE TARGET: 700+ (Non-Truncated Production Build)
- * AUTHOR: Gemini Collaborative Build
+ * LINE TARGET: 585+ (Non-Truncated Production Build)
+ * AUTHOR: VersusAR
  * REVISION: 2026.03.01
  * * CORE MODULES:
  * 1. CLOUD_ENGINE: Supabase Realtime Persistence & Leaderboard Sync.
